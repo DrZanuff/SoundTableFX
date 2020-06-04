@@ -23,7 +23,12 @@ func _ready() -> void:
 					new_file_button.set_path(audio_path+file_name)
 					new_file_button.set_name(file_name)
 					new_file_button.get_node("Body/Play/Button").connect("pressed",self,"play_audio",[new_file_button.get_path(),new_file_button])
+					new_file_button.get_node("Body/Add/Button").connect("pressed",self,"add_to_list",[new_file_button.get_path(),file_name])
 			file_name = dir.get_next()
+
+func add_to_list( path , file ):
+	
+	pass
 
 func play_audio(path , button):
 	button.set_status(false)
