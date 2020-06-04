@@ -4,8 +4,10 @@ var file_button = load("res://SoundButton/SoundFile.tscn")
 var project_path
 var audio_path
 onready var itens = $Main/Window/Left/Files/Body/Scroll/Itens
+onready var list = $Main/Window/Right/M/Body/List/M/Menu/MenuButton
 
 func _ready() -> void:
+	list.get_popup().connect("id_pressed",self,"id_select")
 	project_path = ProjectSettings.globalize_path("res://")
 	audio_path = project_path + "Audios/"
 	
@@ -41,3 +43,36 @@ func play_audio(path , button):
 		
 func _on_Player_finished() -> void:
 	get_tree().call_group("Button","set_status",true)
+
+
+func _on_Add_pressed() -> void:
+	$SaveList.show()
+#	list.get_popup().add_item("New Item")
+#	var last = list.get_popup().get_item_count()-1
+#	list.text = list.get_popup().get_item_text(last)
+
+func _on_ListNameField_text_changed(new_text: String) -> void:
+	if new_text != "":
+		$SaveList/OuterM/InnerM/M/Box/ButtonSaveList.disabled = false
+	else:
+		$SaveList/OuterM/InnerM/M/Box/ButtonSaveList.disabled = true
+
+func _on_ButtonSaveList_pressed() -> void:
+	var text = $SaveList/OuterM/InnerM/M/Box/ListNameField.text
+	for t in range(list.get_popup().get_item_count() ):
+		if list.get_popup().get_item_text(t) == text:
+			$SaveList/OuterM/InnerM/M/Box/ListNameField.text = ""
+			$SaveList/OuterM/InnerM/M/Box/ListNameField.placeholder_text = "Name already exists"
+			return
+	
+	list.get_popup().add_item(text)
+	list.text = text
+	$SaveList.hide()
+	$SaveList/OuterM/InnerM/M/Box/ListNameField.text = ""
+	$SaveList/OuterM/InnerM/M/Box/ListNameField.placeholder_text = "Type List Name"
+	$Main/Window/Right/M/Body/List/M/Menu/Edit.disabled = false
+	$Main/Window/Right/M/Body/List/M/Menu/Remove.disabled = false
+	$Main/Window/Right/M/Body/List/M/Menu/Save.disabled = false
+	
+func id_select(id):
+	list.text = list.get_popup().get_item_text(id)

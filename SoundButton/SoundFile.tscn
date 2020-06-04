@@ -62,6 +62,7 @@ margin_right = 37.0
 margin_bottom = 37.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 1 )
+expand_icon = true
 
 [node name="Play" type="MarginContainer" parent="Body"]
 margin_left = 318.0
@@ -79,3 +80,4 @@ margin_right = 37.0
 margin_bottom = 37.0
 rect_min_size = Vector2( 32, 32 )
 icon = ExtResource( 2 )
+expand_icon = true
