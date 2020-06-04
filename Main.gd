@@ -20,10 +20,11 @@ func _ready() -> void:
 					itens.add_child(new_file_button)
 					new_file_button.set_path(audio_path+file_name)
 					new_file_button.set_name(file_name)
-					new_file_button.get_node("Body/Play/Button").connect("pressed",self,"play_audio",[new_file_button.get_path()])
+					new_file_button.get_node("Body/Play/Button").connect("pressed",self,"play_audio",[new_file_button.get_path(),new_file_button])
 			file_name = dir.get_next()
 
-func play_audio(path):
+func play_audio(path , button):
+	button.set_status(false)
 	$Player.stop()
 	var audio = AudioStreamOGGVorbis.new()
 	var file = File.new()
@@ -38,3 +39,5 @@ func play_audio(path):
 	else:
 		printt("no" , path)
 		
+func _on_Player_finished() -> void:
+	get_tree().call_group("Button","set_status",true)

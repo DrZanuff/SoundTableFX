@@ -5,6 +5,7 @@ var sound_name = ""
 
 var play_icon = "res://icons/TransitionImmediateAutoBig.svg"
 var stop_icon = "res://icons/Pause.svg"
+var playing = false
 
 func set_path(path : String):
 	sound_file = path
@@ -19,13 +20,15 @@ func set_name(name : String):
 func get_name():
 	return sound_name
 	
-
-
-func play_audio(status : bool):
+func set_status(status : bool):
+	playing = status
 	if status:
 		$Body/Play/Button.icon = load(play_icon)
 	else:
 		$Body/Play/Button.icon = load(stop_icon)
+
+func get_status():
+	return playing
 
 #var sel = false
 #var colors = [
