@@ -30,6 +30,11 @@ func set_status(status : bool):
 func get_status():
 	return playing
 
+func disable_add_button(status):
+	$Body/Add/Button.disabled = status
+
+
+
 #var sel = false
 #var colors = [
 #	Color(0.588235, 0.588235, 0.588235, 0.298039) ,
