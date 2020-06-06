@@ -4,6 +4,7 @@ extends Node
 - Não deletar botões do Left Panel, apenas adicionar
 - Adicionar Botões dentro do Grupo var current_list
 - Ao mudar de lista, dar um show e Hide nos elementos
+- Criar sistema de Canais de Players (Array de AudioStream)
 """
 
 var file_button = load("res://SoundButton/SoundFile.tscn")
@@ -29,7 +30,7 @@ var current_list = "Main List"
 func _ready() -> void:
 	list.get_popup().connect("id_pressed",self,"id_select")
 	refresh()
-
+	
 func add_list(new_list):
 	var list_model = { "name":new_list , track_list = {} }
 	play_list.custom_lists[new_list] = list_model
@@ -133,3 +134,15 @@ func refresh():
 
 func _on_Refresh_pressed() -> void:
 	refresh()
+
+func set_volume(vol):
+	AudioServer.set_bus_volume_db(0 , vol)
+	$Main/Window/Left/Files/Body/Current/Control/Label.text = "Volume: " + str(vol)
+	print(AudioServer.get_bus_volume_db(0))
+
+func _on_Volume_value_changed(value):
+	set_volume(value)
+
+func _on_ButtonPauseAll_pressed():
+	get_tree().call_group("Button","set_status",true)
+	$Player.stop()
