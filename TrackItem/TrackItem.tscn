@@ -64,6 +64,7 @@ custom_constants/margin_bottom = 5
 margin_top = 5.0
 margin_right = 141.0
 margin_bottom = 37.0
+editable = false
 placeholder_text = "Click to set Shortcut"
 
 [node name="Play" type="MarginContainer" parent="Body"]

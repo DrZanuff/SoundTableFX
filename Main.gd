@@ -14,12 +14,14 @@ var audio_path
 onready var itens = $Main/Window/Left/Files/Body/Scroll/Itens
 onready var list = $Main/Window/Right/M/Body/List/M/Menu/MenuButton
 onready var tracks = $Main/Window/Right/M/Body/Scroll/PlayList
+var current_btn = null
+
 
 var play_list = {
 	custom_lists =  {
 						"Main List":
 						{ "name" : "Main List" , track_list = {
-#								"Track" : {"name" : "" , "path" : ""}
+#								"Track" : {"name" : "" , "path" : "" , "shortcut": ""}
 							}
 						}
 					}
@@ -38,13 +40,9 @@ func add_list(new_list):
 func add_to_list( path , file , button):
 	button.disable_add_button(true)
 	
-	var track_model = {"name":file , "path":path}
-	print(play_list)
-	print("\n\n")
+	var track_model = {"name":file , "path":path , "shortcut":""}
 #	play_list.custom_lists[current_list].track_list.push_back(track_model)
 	play_list.custom_lists[current_list].track_list[file] = track_model
-	print(play_list)
-	print("\n\n")
 
 	var new_track_button = track_button.instance()
 	tracks.add_child(new_track_button)
@@ -53,6 +51,42 @@ func add_to_list( path , file , button):
 	
 	new_track_button.get_node("Body/Play/Button").connect("pressed",self,"play_audio",[ path ,new_track_button])
 	new_track_button.get_node("Body/Trash/Button").connect("pressed",self,"remove_from_list",[ new_track_button , button , file ])
+	new_track_button.get_node("Body/ShotCut/LineEdit").connect("gui_input",self,"set_shortcut",[new_track_button])
+	new_track_button.connect("set_new_key",self,"lock_screen")
+
+func lock_screen( status := true):
+	if status:
+		$MouseLock.mouse_filter = Control.MOUSE_FILTER_STOP
+	else:
+		$MouseLock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		
+func _input(event: InputEvent) -> void:
+	if current_btn != null:
+		if event is InputEventKey and not event.is_echo() and event.is_pressed():
+			var l = current_btn.get_label_text()
+			
+			if event.scancode == 16777217:
+				current_btn.set_text("Click to set Shortcut")
+				play_list.custom_lists[current_list].track_list[l].shortcut = ""
+			else:
+				current_btn.set_text( event.as_text() )
+				play_list.custom_lists[current_list].track_list[l].shortcut = event.scancode
+			
+			lock_screen(false)
+			current_btn = null
+	else:
+		if event is InputEventKey and not event.is_echo() and event.is_pressed():
+			for i in play_list.custom_lists[current_list].track_list:
+				var track = play_list.custom_lists[current_list].track_list[i]
+				if str(track.shortcut) == str(event.scancode):
+					play_audio(track.path , null)
+					return
+
+func set_shortcut(event , btn):
+	if event is InputEventMouseButton:
+		if event.is_pressed() and event.button_index == 1:
+			btn.set_key()
+			current_btn = btn
 
 func remove_from_list( btn , ref_btn , file ):
 	btn.queue_free()
@@ -60,7 +94,9 @@ func remove_from_list( btn , ref_btn , file ):
 	play_list.custom_lists[current_list].track_list.erase(file)
 
 func play_audio(path , button):
-	button.set_status(false)
+	if button != null:
+		button.set_status(false)
+		
 	$Player.stop()
 	var audio = AudioStreamOGGVorbis.new()
 	var file = File.new()

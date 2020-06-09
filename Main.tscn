@@ -415,6 +415,15 @@ margin_bottom = 400.0
 window_title = "Choose name"
 
 [node name="Player" type="AudioStreamPlayer" parent="."]
+
+[node name="MouseLock" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 1, 1, 1, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="value_changed" from="Main/Window/Left/Files/Body/Current/Control/Volume" to="." method="_on_Volume_value_changed"]
 [connection signal="pressed" from="Main/Window/Left/Files/Body/Current/Control/M/ButtonPauseAll" to="." method="_on_ButtonPauseAll_pressed"]
 [connection signal="pressed" from="Main/Window/Left/Files/Body/Title/HBox/M/Refresh" to="." method="_on_Refresh_pressed"]
